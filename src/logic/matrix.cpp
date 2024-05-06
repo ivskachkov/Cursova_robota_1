@@ -157,4 +157,14 @@ Vector Matrix::diagonal() const {
     return result;
 }
 
+Vector Matrix::col(int index) const {
+    if ( index < 0 || index >= data[0].size() )
+        throw std::runtime_error("The index must be greater than or equal to zero and less than the number of columns");
+    Vector result(data.size());
+    for ( int i = 0; i < data.size(); ++i ){
+        result[i] = data[i][index];
+    }
+    return result;
+}
+
 //-a[n][1..] / a[n][n-1]

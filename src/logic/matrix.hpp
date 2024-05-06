@@ -24,6 +24,7 @@ public:
     int cols() const;
     Matrix transpose() const;
     Vector diagonal() const;
+    Vector col(int index) const;
 
 private:
     std::vector<Vector> data;

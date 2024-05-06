@@ -1,5 +1,4 @@
 #include "danylevsky_matrix_eigen_vv.hpp"
-#include <cmath>
 
 DanylevskyMatrixEigenVV::DanylevskyMatrixEigenVV(std::unique_ptr<IExtremumFinder> finder) : finder(std::move(finder))
 {
@@ -19,15 +18,18 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
     }
     std::vector<Matrix> vecS(m.rows(), Matrix(m.cols(), 1));
     Result res;
-    res.eigenValues = finder->findExtremums([v = m[0]](double x)->double { return func(x, v); });
-    for ( int i = 0; i < res.eigenValues.size(); ++i ){
-        double v = res.eigenValues[i];
+    res.resize(m.rows());
+    auto values = finder->findExtremums([v = m[0]](double x)->double { return func(x, v); });
+    for ( int i = 0; i < values.size(); ++i ){
+        res[i].eigenValue = values[i];
+        double v = values[i];
         for ( int j = 0; j < m.rows(); ++j ){
             vecS[i][j][0] = pow(v, m.rows()-j-1);
         }
         vecS[i] = s * vecS[i];
+        res[i].eigenVector = vecS[i].transpose()[0];
     }
-    std::transform(vecS.begin(), vecS.end(), std::back_inserter(res.eigenVectors), [](const Matrix & v) { return v.transpose()[0]; });
+    //std::transform(vecS.begin(), vecS.end(), std::back_inserter(res.eigenVectors), [](const Matrix & v) { return v.transpose()[0]; });
     return res;
 }
 

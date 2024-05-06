@@ -4,6 +4,7 @@
 #include "matrix.hpp"
 #include "extremum_finder.hpp"
 #include <memory>
+#include <cmath>
 
 class DanylevskyMatrixEigenVV : public IMatrixEigenVV
 {

@@ -119,12 +119,12 @@ void Window::on_calculateButton_clicked()
         if (eigenVV) {
             QString text;
             auto results = eigenVV->calculate(matrix);
-            for (int i = 0; i < results.eigenValues.size(); ++i) {
-                if ( results.eigenValues.size() > i ){
-                    text += "Eigen value: " + QString::number(results.eigenValues[i]) + " \t";
+            for (int i = 0; i < results.size(); ++i) {
+                if ( results.size() > i ){
+                    text += "Eigen value: " + QString::number(results[i].eigenValue) + " \t";
                 }
-                if ( results.eigenVectors.size() > i ){
-                    text += "Vector: " + QString::fromStdString(to_string(results.eigenVectors[i]));
+                if ( results.size() > i ){
+                    text += "Vector: " + QString::fromStdString(to_string(results[i].eigenVector));
                 }
                 text += "\n";
             }

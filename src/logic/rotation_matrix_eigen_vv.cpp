@@ -100,25 +100,25 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
     init = m;
     double E = 1E-4;
     int i = 10000;
+    Matrix uVector(m.rows(), m.cols());
     while(E < calculateNDE() && i >= 0){
         MaxElementInfo a = getMax();
         Matrix U = getU(a);
         Matrix tU = U.transpose();
         m = tU * m * U;
+        uVector = uVector * U;
         i--;
     }
+
     Result res;
-    res.eigenVectors.resize(m.rows());
-    res.eigenValues = m.diagonal();
-    std::sort(res.eigenValues.begin(), res.eigenValues.end());
-    
-    for ( int i = 0; i < res.eigenValues.size(); ++i ){
-        Matrix ma = applyL(res.eigenValues[i]);
-        Matrix ma1 = gaussMeethod(ma, ma.cols()-1);
-        for ( int j = 0; j < ma1.rows()-1; ++j ){
-            res.eigenVectors[i].push_back(-ma1[j][ma1.cols()-1]);
-        }
-        res.eigenVectors[i].push_back(1);
+    res.resize(m.rows());
+    auto values = m.diagonal();
+    for ( int i = 0; i < res.size(); ++i ){
+        res[i].eigenValue = values[i];
+        auto v = uVector.col(i);
+        v = v / v[m.rows()-1];
+        res[i].eigenVector = v;
     }
+    std::sort(res.begin(), res.end(), [](const Eigen & a, const Eigen & b) { return a.eigenValue < b.eigenValue; });
     return res;
 }

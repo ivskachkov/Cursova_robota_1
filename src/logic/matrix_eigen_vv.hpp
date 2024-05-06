@@ -7,11 +7,12 @@ class IMatrixEigenVV
 public:
     using Mat = std::vector<std::vector<double>>;
     using Vec = std::vector<double>;
-    struct Result
+    struct Eigen
     {
-        std::vector<double> eigenValues;
-        std::vector<Vec> eigenVectors;
+        double eigenValue;
+        Vec eigenVector;
     };
+    using Result = std::vector<Eigen>;
     virtual ~IMatrixEigenVV() = default;
     virtual Result calculate (const Mat & matrix) = 0;
 };

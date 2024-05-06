@@ -7,7 +7,6 @@
 #include "rotation_matrix_eigen_vv.hpp"
 #include <iostream>
 #include <thread>
-#include <cmath>
 
 using namespace std;
 
@@ -357,12 +356,12 @@ TEST(math, test_danylevsky_class_positive){
         {0.8975, 0.7531, 0.69, 1},
 
     };
-    for (int i = 0; i < res.eigenValues.size(); i++){
-        EXPECT_NEAR(res.eigenValues[i], expected[i], 0.01);
+    for (int i = 0; i < res.size(); i++){
+        EXPECT_NEAR(res[i].eigenValue, expected[i], 0.01);
     }
-    for (int i = 0; i < res.eigenVectors.size(); i++){
-        for (int j = 0; j < res.eigenVectors[i].size(); j++){
-            EXPECT_NEAR(res.eigenVectors[i][j], v_expected[i][j], 0.01);
+    for (int i = 0; i < res.size(); i++){
+        for (int j = 0; j < res[i].eigenVector.size(); j++){
+            EXPECT_NEAR(res[i].eigenVector[j], v_expected[i][j], 0.01);
         }
     }
 }
@@ -402,12 +401,12 @@ TEST(math, test_rotation_matrix_basic){
         {0.8975, 0.7531, 0.69, 1},
 
     };
-    for (int i = 0; i < res.eigenValues.size(); i++){
-        EXPECT_NEAR(res.eigenValues[i], expected[i], 0.01);
+    for (int i = 0; i < res.size(); i++){
+        EXPECT_NEAR(res[i].eigenValue, expected[i], 0.01);
     }
-    for (int i = 0; i < res.eigenVectors.size(); i++){
-        for (int j = 0; j < res.eigenVectors[i].size(); j++){
-            EXPECT_NEAR(res.eigenVectors[i][j], v_expected[i][j], 0.01);
+    for (int i = 0; i < res.size(); i++){
+        for (int j = 0; j < res[i].eigenVector.size(); j++){
+            EXPECT_NEAR(res[i].eigenVector[j], v_expected[i][j], 0.01);
         }
     }
 }
@@ -437,12 +436,12 @@ TEST(math, math_test_danylevsky_vs_rotation){
         auto rotation = std::make_unique<RotationMatrixEigenVV>();
         auto res_danylevsky = danylevsky->calculate(matrix);
         auto res_rotation = rotation->calculate(matrix);
-        for (int i = 0; i < res_danylevsky.eigenValues.size(); i++){
-            EXPECT_NEAR(res_danylevsky.eigenValues[i], res_rotation.eigenValues[i], 0.01);
+        for (int i = 0; i < res_danylevsky.size(); i++){
+            EXPECT_NEAR(res_danylevsky[i].eigenValue, res_rotation[i].eigenValue, 0.01);
         }
-        for (int i = 0; i < res_danylevsky.eigenVectors.size(); i++){
-            for (int j = 0; j < res_danylevsky.eigenVectors[i].size(); j++){
-                EXPECT_NEAR(res_danylevsky.eigenVectors[i][j], res_rotation.eigenVectors[i][j], 0.02);
+        for (int i = 0; i < res_danylevsky.size(); i++){
+            for (int j = 0; j < res_danylevsky[i].eigenVector.size(); j++){
+                EXPECT_NEAR(res_danylevsky[i].eigenVector[j], res_rotation[i].eigenVector[j], 0.01);
             }
         }
     }

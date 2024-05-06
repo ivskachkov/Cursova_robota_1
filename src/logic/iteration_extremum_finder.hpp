@@ -1,6 +1,7 @@
 #pragma once
 
 #include "extremum_finder.hpp"
+#include <cmath>
 
 class IterationExtremumFinder : public IExtremumFinder
 {
