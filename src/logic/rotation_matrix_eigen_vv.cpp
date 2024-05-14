@@ -111,14 +111,17 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
     }
 
     Result res;
-    res.resize(m.rows());
+    res.data.resize(m.rows());
     auto values = m.diagonal();
-    for ( int i = 0; i < res.size(); ++i ){
-        res[i].eigenValue = values[i];
+    for ( int i = 0; i < res.data.size(); ++i ){
+        res.data[i].eigenValue = values[i];
         auto v = uVector.col(i);
         v = v / v[m.rows()-1];
-        res[i].eigenVector = v;
+        if ( v.isValid() )
+            res.data[i].eigenVector = v;
     }
-    std::sort(res.begin(), res.end(), [](const Eigen & a, const Eigen & b) { return a.eigenValue < b.eigenValue; });
+    std::sort(res.data.begin(), res.data.end(), [](const Eigen & a, const Eigen & b) { return a.eigenValue < b.eigenValue; });
+    auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-4 || e.eigenVector.empty(); });
+    res.data.erase(e, res.data.end());
     return res;
 }

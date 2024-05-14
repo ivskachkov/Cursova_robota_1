@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
+#include <functional>
 
 class IMatrixEigenVV
 {
@@ -12,7 +14,12 @@ public:
         double eigenValue;
         Vec eigenVector;
     };
-    using Result = std::vector<Eigen>;
+    struct Result{
+        std::vector<Eigen> data;
+        std::function<double(double)> func;
+        double funcMaxX;
+        std::vector<double> coefficients;
+    };
     virtual ~IMatrixEigenVV() = default;
     virtual Result calculate (const Mat & matrix) = 0;
 };

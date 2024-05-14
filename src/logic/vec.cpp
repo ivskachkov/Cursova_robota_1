@@ -108,3 +108,11 @@ int Vector::size() const {
 Vector::operator std::vector<double> () const {
     return data;
 }
+
+bool Vector::isValid() const {
+    for ( int i = 0; i < data.size(); ++i ){
+        if ( isnan(data[i]) )
+            return false;
+    }
+    return true;
+}

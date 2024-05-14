@@ -2,7 +2,6 @@
 #define WINDOW_H
 
 #include <QMainWindow>
-#include <QLineSeries>
 #include "matrix_model.hpp"
 #include <matrix_eigen_vv.hpp>
 
@@ -30,7 +29,6 @@ private:
     Ui::Window *ui;
     MatrixModel * matrixModel;
     std::unique_ptr<IMatrixEigenVV> eigenVV;
-    QLineSeries * series;
 };
 
 #endif // WINDOW_H

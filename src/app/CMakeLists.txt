@@ -1,4 +1,12 @@
-qt_add_executable(${PROJECT_NAME} window.ui window.cpp main.cpp matrix_model.cpp)
+set(SOURCES
+    window.ui
+    window.cpp
+    main.cpp
+    matrix_model.cpp
+    decart_graph_widget.cpp
+)
+
+qt_add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core

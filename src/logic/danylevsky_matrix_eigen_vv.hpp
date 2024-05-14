@@ -4,16 +4,15 @@
 #include "matrix.hpp"
 #include "extremum_finder.hpp"
 #include <memory>
-#include <cmath>
 
 class DanylevskyMatrixEigenVV : public IMatrixEigenVV
 {
 public:
     DanylevskyMatrixEigenVV(std::unique_ptr<IExtremumFinder> finder);
     Result calculate(const Mat & matrix) override;
+    static double func(double x, const std::vector<double> & v);
 
 private:
-    static double func(double x, const std::vector<double> & v);
     Matrix makeM(const Matrix & m, int n) const;
     Matrix makeMR(const Matrix & m, int n) const;
     std::unique_ptr<IExtremumFinder> finder;

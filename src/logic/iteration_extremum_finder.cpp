@@ -1,5 +1,5 @@
 #include "iteration_extremum_finder.hpp"
-
+#include <cmath>
 
 IterationExtremumFinder::IterationExtremumFinder(double leftx, double rightx, double eps, double step)
     : leftx(leftx), rightx(rightx), eps(eps), step(step)
@@ -26,7 +26,8 @@ double IterationExtremumFinder::findRoot(double leftx, double rightx, double eps
     double x = (leftx + rightx) / 2;
     double y = f(x);
     double prefix = f(x + eps) > y ? 1 : -1;
-    while (fabs(y) > eps) {
+    int i = 0;
+    while (fabs(y) > eps && i++ < 1000) {
         if (y * prefix > 0) {
             rightx = x;
         } else {
@@ -34,6 +35,9 @@ double IterationExtremumFinder::findRoot(double leftx, double rightx, double eps
         }
         x = (leftx + rightx) / 2;
         y = f(x);
+    }
+    if (i == 1000) {
+        throw std::runtime_error("Root not found");
     }
     return x;
 }

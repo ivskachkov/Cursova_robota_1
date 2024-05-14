@@ -47,7 +47,6 @@ Window::Window(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Window)
     , matrixModel(new MatrixModel(this))
-    , series(new QLineSeries(this))
 {
     ui->setupUi(this);
     ui->initMatrixTableView->setModel(matrixModel);
@@ -59,6 +58,15 @@ Window::Window(QWidget *parent)
     matrix[3] = std::vector<double>{2, 1, 1.6, 2};
 
     matrixModel->setMatrix(matrix);
+    connect(matrixModel, &MatrixModel::dataChanged, this, [this](){
+        this->on_calculateButton_clicked();
+    });
+    connect(matrixModel, &MatrixModel::modelReset, this, [this](){
+        auto state = ui->matrixSizeSpinBox->blockSignals(true);
+        ui->matrixSizeSpinBox->setValue(matrixModel->rowCount());
+        ui->matrixSizeSpinBox->blockSignals(state);
+        this->on_calculateButton_clicked();
+    });
 }
 
 Window::~Window()
@@ -111,27 +119,47 @@ void Window::on_actionSave_triggered()
 void Window::on_calculateButton_clicked()
 {
     try {
-        if (ui->methodComboBox->currentText() == "Danylevskogo")
+        ui->graph->clear();
+        if (ui->methodComboBox->currentText() == "Danylevskogo"){
             eigenVV = createDanylevskyMatrixEigenVV();
-        else if (ui->methodComboBox->currentText() == "Rotation")
-            eigenVV = createRotationMatrixEigenVV();
-        auto matrix = matrixModel->getMatrix();
-        if (eigenVV) {
-            QString text;
-            auto results = eigenVV->calculate(matrix);
-            for (int i = 0; i < results.size(); ++i) {
-                if ( results.size() > i ){
-                    text += "Eigen value: " + QString::number(results[i].eigenValue) + " \t";
+            auto matrix = matrixModel->getMatrix();
+            if (eigenVV) {
+                QString text;
+                auto results = eigenVV->calculate(matrix);
+                for (int i = 0; i < results.data.size(); ++i) {
+                    if ( results.data.size() > i ){
+                        text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
+                    }
+                    if ( results.data.size() > i ){
+                        text += "Vector: " + QString::fromStdString(to_string(results.data[i].eigenVector));
+                    }
+                    text += "\n";
                 }
-                if ( results.size() > i ){
-                    text += "Vector: " + QString::fromStdString(to_string(results[i].eigenVector));
-                }
-                text += "\n";
+                ui->lblResult->setText(text);
+                ui->graph->showPolynom(results);
             }
-            ui->lblResult->setText(text);
+        }
+        else if (ui->methodComboBox->currentText() == "Rotation"){
+            eigenVV = createRotationMatrixEigenVV();
+            auto matrix = matrixModel->getMatrix();
+            if (eigenVV) {
+                QString text;
+                auto results = eigenVV->calculate(matrix);
+                for (int i = 0; i < results.data.size(); ++i) {
+                    if ( results.data.size() > i ){
+                        text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
+                    }
+                    if ( results.data.size() > i ){
+                        text += "Vector: " + QString::fromStdString(to_string(results.data[i].eigenVector));
+                    }
+                    text += "\n";
+                }
+                ui->lblResult->setText(text);
+            }
         }
     } catch (const std::exception & e) {
         ui->lblResult->setText("");
+        ui->graph->clear();
         ui->statusbar->showMessage("This method could not be used for the matrix because: " + QString(e.what()), 10000);
     }
 }

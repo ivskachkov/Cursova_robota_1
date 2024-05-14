@@ -1,4 +1,5 @@
 #include "danylevsky_matrix_eigen_vv.hpp"
+#include <cmath>
 
 DanylevskyMatrixEigenVV::DanylevskyMatrixEigenVV(std::unique_ptr<IExtremumFinder> finder) : finder(std::move(finder))
 {
@@ -18,17 +19,25 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
     }
     std::vector<Matrix> vecS(m.rows(), Matrix(m.cols(), 1));
     Result res;
-    res.resize(m.rows());
-    auto values = finder->findExtremums([v = m[0]](double x)->double { return func(x, v); });
+    res.data.resize(m.rows());
+    res.coefficients = m[0];
+    res.func = [v = m[0]](double x)->double { return func(x, v); };
+    auto values = finder->findExtremums(res.func);
     for ( int i = 0; i < values.size(); ++i ){
-        res[i].eigenValue = values[i];
+        res.data[i].eigenValue = values[i];
         double v = values[i];
         for ( int j = 0; j < m.rows(); ++j ){
             vecS[i][j][0] = pow(v, m.rows()-j-1);
         }
         vecS[i] = s * vecS[i];
-        res[i].eigenVector = vecS[i].transpose()[0];
+        res.data[i].eigenVector = vecS[i].transpose()[0];
     }
+    
+    auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-4; });
+    res.data.erase(e, res.data.end());
+
+    int lastID = res.data.size()-1;
+    res.funcMaxX = fabs(res.data[0].eigenValue) > fabs(res.data[lastID].eigenValue) ? res.data[0].eigenValue : res.data[lastID].eigenValue;
     //std::transform(vecS.begin(), vecS.end(), std::back_inserter(res.eigenVectors), [](const Matrix & v) { return v.transpose()[0]; });
     return res;
 }

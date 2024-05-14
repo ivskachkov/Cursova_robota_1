@@ -23,6 +23,7 @@ public:
     double operator[] (int index) const;
     int size() const;
     operator std::vector<double> () const;
+    bool isValid() const;
 
 private:
     std::vector<double> data;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>705</width>
-    <height>597</height>
+    <width>749</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,20 @@
      </layout>
     </item>
     <item>
-     <widget class="QTableView" name="initMatrixTableView"/>
+     <widget class="QTableView" name="initMatrixTableView">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>150</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -73,6 +86,9 @@
        <widget class="QComboBox" name="methodComboBox">
         <property name="currentText">
          <string>Danylevskogo</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
         </property>
         <item>
          <property name="text">
@@ -99,7 +115,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>100</height>
+        <height>0</height>
        </size>
       </property>
       <property name="font">
@@ -118,6 +134,22 @@
       </property>
       <property name="textInteractionFlags">
        <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="DecartGraphWidget" name="graph" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>100</height>
+       </size>
       </property>
      </widget>
     </item>
@@ -152,7 +184,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>705</width>
+     <width>749</width>
      <height>37</height>
     </rect>
    </property>
@@ -193,6 +225,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DecartGraphWidget</class>
+   <extends>QWidget</extends>
+   <header>decart_graph_widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
