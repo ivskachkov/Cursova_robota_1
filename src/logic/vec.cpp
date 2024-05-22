@@ -111,7 +111,7 @@ Vector::operator std::vector<double> () const {
 
 bool Vector::isValid() const {
     for ( int i = 0; i < data.size(); ++i ){
-        if ( isnan(data[i]) )
+        if ( std::isnan(data[i]) )
             return false;
     }
     return true;

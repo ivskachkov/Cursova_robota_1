@@ -1,5 +1,6 @@
 #include "iteration_extremum_finder.hpp"
 #include <cmath>
+#include <stdexcept>
 
 IterationExtremumFinder::IterationExtremumFinder(double leftx, double rightx, double eps, double step)
     : leftx(leftx), rightx(rightx), eps(eps), step(step)
