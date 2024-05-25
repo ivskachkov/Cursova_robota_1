@@ -138,7 +138,7 @@ void Window::on_calculateButton_clicked()
                     }
                     text += "\n";
                 }
-                text += DecartGraphWidget::formula(results);
+                text += QString::number(results.time) + " ms | " + DecartGraphWidget::formula(results);
                 ui->lblResult->setText(text);
                 ui->graph->showPolynom(results);
             }
@@ -161,6 +161,7 @@ void Window::on_calculateButton_clicked()
                     }
                     text += "\n";
                 }
+                text += QString::number(results.time) + " ms";
                 ui->lblResult->setText(text);
             }
         }

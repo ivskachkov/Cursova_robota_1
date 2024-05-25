@@ -19,6 +19,7 @@ public:
         std::function<double(double)> func;
         double funcMaxX;
         std::vector<double> coefficients;
+        uint64_t time;
     };
     virtual ~IMatrixEigenVV() = default;
     virtual Result calculate (const Mat & matrix) = 0;

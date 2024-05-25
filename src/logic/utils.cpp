@@ -1,5 +1,6 @@
 #include "utils.hpp"
 #include <cmath>
+#include <chrono>
 
 double calcStep(double x, double * max)
 {
@@ -18,4 +19,9 @@ double calcStep(double x, double * max)
             *max += 1;
     }
     return ceil(2*x*0.1)/prefix;;
+}
+
+uint64_t currentTimestamp()
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 }

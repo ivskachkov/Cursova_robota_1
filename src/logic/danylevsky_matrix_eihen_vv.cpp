@@ -1,5 +1,6 @@
 #include "danylevsky_matrix_eigen_vv.hpp"
 #include <cmath>
+#include "utils.hpp"
 
 DanylevskyMatrixEigenVV::DanylevskyMatrixEigenVV(std::unique_ptr<IExtremumFinder> finder) : finder(std::move(finder))
 {
@@ -9,6 +10,7 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
 {
     std::vector<Vector> arg;
     std::transform(matrix.begin(), matrix.end(), std::back_inserter(arg), [](const Vec & v) { return Vector(v); });
+    uint64_t tStart = currentTimestamp(), tEnd = 0;
     m = Matrix(arg);
     s = Matrix(m.rows(), m.cols());
     for ( int i = m.rows()-1; i > 0; --i ){
@@ -32,7 +34,8 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
         vecS[i] = s * vecS[i];
         res.data[i].eigenVector = vecS[i].transpose()[0];
     }
-    
+    tEnd = currentTimestamp();
+    res.time = tEnd - tStart;
     auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-4; });
     res.data.erase(e, res.data.end());
 

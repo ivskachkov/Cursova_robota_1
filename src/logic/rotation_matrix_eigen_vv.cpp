@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include "utils.hpp"
 
 Matrix RotationMatrixEigenVV::gaussMeethod(const Matrix & m, int count){
     Matrix result = m;
@@ -98,6 +99,7 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
     std::transform(matrix.begin(), matrix.end(), std::back_inserter(arg), [](const Vec & v) { return Vector(v); });
     m = Matrix(arg);
     init = m;
+    uint64_t tStart = currentTimestamp(), tEnd = 0;
     double E = 1E-4;
     int i = 10000;
     Matrix uVector(m.rows(), m.cols());
@@ -120,6 +122,8 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
         if ( v.isValid() )
             res.data[i].eigenVector = v;
     }
+    tEnd = currentTimestamp();
+    res.time = tEnd - tStart;
     std::sort(res.data.begin(), res.data.end(), [](const Eigen & a, const Eigen & b) { return a.eigenValue < b.eigenValue; });
     auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-4 || e.eigenVector.empty(); });
     res.data.erase(e, res.data.end());
