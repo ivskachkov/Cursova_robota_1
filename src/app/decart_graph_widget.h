@@ -13,6 +13,7 @@ public:
     void showPolynom(const Result & result);
     QSize sizeHint() const override;
     void clear();
+    static QString formula(const Result & result);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -30,5 +31,4 @@ private:
     void drawPolynom(QPainter &painter);
     void drawAxis(QPainter &painter);
     void drawIntersections(QPainter &painter);
-    static QString formula(const Result & result);
 };

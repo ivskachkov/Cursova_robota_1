@@ -43,9 +43,9 @@ void DecartGraphWidget::paintEvent(QPaintEvent *event)
     drawAxis(painter);
     drawIntersections(painter);
 
-    painter.setPen(Qt::black);
-    painter.fillRect(0, 0, width(), 20, Qt::white);
-    painter.drawText(5, 15, formula(result));
+    // painter.setPen(Qt::black);
+    // painter.fillRect(0, 0, width(), 20, Qt::white);
+    // painter.drawText(5, 15, formula(result));
 }
 
 //Convert x to screen coordinate and center them

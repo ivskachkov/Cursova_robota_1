@@ -65,8 +65,10 @@ bool MatrixModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     if (!index.isValid() || role != Qt::EditRole)
         return false;
-
-    matrix[index.row()][index.column()] = value.toDouble();
+    double v = value.toDouble();
+    if ( v > 1000 || v < -1000 )
+        return false;
+    matrix[index.row()][index.column()] = v;
     emit dataChanged(index, index, {role});
 
     return true;

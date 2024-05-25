@@ -126,6 +126,9 @@ void Window::on_calculateButton_clicked()
             if (eigenVV) {
                 QString text;
                 auto results = eigenVV->calculate(matrix);
+                if ( results.data.size() == 0 ){
+                    throw std::runtime_error("No eigen values found");
+                }
                 for (int i = 0; i < results.data.size(); ++i) {
                     if ( results.data.size() > i ){
                         text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
@@ -135,6 +138,7 @@ void Window::on_calculateButton_clicked()
                     }
                     text += "\n";
                 }
+                text += DecartGraphWidget::formula(results);
                 ui->lblResult->setText(text);
                 ui->graph->showPolynom(results);
             }
@@ -145,6 +149,9 @@ void Window::on_calculateButton_clicked()
             if (eigenVV) {
                 QString text;
                 auto results = eigenVV->calculate(matrix);
+                if ( results.data.size() == 0 ){
+                    throw std::runtime_error("No eigen values found");
+                }
                 for (int i = 0; i < results.data.size(); ++i) {
                     if ( results.data.size() > i ){
                         text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
@@ -160,6 +167,6 @@ void Window::on_calculateButton_clicked()
     } catch (const std::exception & e) {
         ui->lblResult->setText("");
         ui->graph->clear();
-        ui->statusbar->showMessage("This method could not be used for the matrix because: " + QString(e.what()), 10000);
+        ui->statusbar->showMessage("Error: " + QString(e.what()), 10000);
     }
 }
