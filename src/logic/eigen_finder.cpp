@@ -6,7 +6,7 @@
 
 std::unique_ptr<IMatrixEigenVV> createDanylevskyMatrixEigenVV()
 {
-    return std::make_unique<DanylevskyMatrixEigenVV>(std::make_unique<IterationExtremumFinder>(-1000, 1000, 0.001, 0.01));
+    return std::make_unique<DanylevskyMatrixEigenVV>(std::make_unique<IterationExtremumFinder>(-1000, 1000, 0.001, 0.1));
 }
 
 std::unique_ptr<IMatrixEigenVV> createRotationMatrixEigenVV()

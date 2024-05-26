@@ -11,34 +11,32 @@ std::vector<double> IterationExtremumFinder::findExtremums(const std::function<d
 {
     std::vector<double> roots;
     double x = leftx;
-    double y = f(x);
+    double yl = f(x);
+    double yr = f(x+step);
     while (x < rightx) {
-        if (y * f(x + step) < 0) {
+        if (yl * yr < 0) {
             roots.push_back(findRoot(x, x + step, eps, f));
         }
         x += step;
-        y = f(x);
+        yl = yr;
+        yr = f(x+step);
     }
     return roots;
 }
 
 double IterationExtremumFinder::findRoot(double leftx, double rightx, double eps, const std::function<double(double)> & f) const
 {
-    double x = (leftx + rightx) / 2;
-    double y = f(x);
-    double prefix = f(x + eps) > y ? 1 : -1;
-    int i = 0;
-    while (fabs(y) > eps && i++ < 10000) {
-        if (y * prefix > 0) {
-            rightx = x;
-        } else {
-            leftx = x;
+    std::vector<double> roots;
+    double x = leftx;
+    double yl = f(x);
+    double yr = f(x+eps);
+    while (x < rightx) {
+        if (yl * yr < 0) {
+            return x+eps/2;
         }
-        x = (leftx + rightx) / 2;
-        y = f(x);
+        x += eps;
+        yl = yr;
+        yr = f(x+eps);
     }
-    if (i == 1000) {
-        throw std::runtime_error("Root not found");
-    }
-    return x;
+    throw std::runtime_error("Root not found");
 }
