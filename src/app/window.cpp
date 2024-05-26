@@ -2,6 +2,7 @@
 #include "ui_window.h"
 #include <QDebug>
 #include <QFileDialog>
+#include <QDateTime>
 #include <fstream>
 #include <stdexcept>
 
@@ -29,6 +30,21 @@ static std::istream & operator>>(std::istream & is, std::vector<std::vector<doub
             is >> value;
     }
     return is;
+}
+
+static std::ostream & operator<<(std::ostream & os, const IMatrixEigenVV::Eigen & eigen)
+{
+    os << eigen.eigenValue << " : {";
+    for (double value : eigen.eigenVector)
+        os << value << ' ';
+    return os << "}\n";
+}
+
+static std::ostream & operator<<(std::ostream & os, const std::vector<IMatrixEigenVV::Eigen> & vv)
+{
+    for (const auto & eigen : vv)
+        os << eigen;
+    return os;
 }
 
 template<typename T>
@@ -105,11 +121,13 @@ void Window::on_actionOpen_triggered()
 
 void Window::on_actionSave_triggered()
 {
-    auto fileName = QFileDialog::getSaveFileName(this, "Save file", "", "Text files (*.txt)");
+    //default file name is date-time
+    QDateTime date = QDateTime::currentDateTime();
+    auto fileName = QFileDialog::getSaveFileName(this, "Save file", date.toString("ddMMyyyyHHmmss")+".txt", "Text files (*.txt)");
     if (fileName.isEmpty())
         return;
     std::ofstream file(fileName.toStdString());
-    if ( file << matrixModel->getMatrix() ){
+    if ( file << matrixModel->getMatrix() << eigenValues ){
         ui->statusbar->showMessage("File: '" + fileName + "' saved", 10000);
     } else
         qDebug() << "Cannot save file: " << fileName;
@@ -122,48 +140,29 @@ void Window::on_calculateButton_clicked()
         ui->graph->clear();
         if (ui->methodComboBox->currentText() == "Danylevskogo"){
             eigenVV = createDanylevskyMatrixEigenVV();
-            auto matrix = matrixModel->getMatrix();
-            if (eigenVV) {
-                QString text;
-                auto results = eigenVV->calculate(matrix);
-                if ( results.data.size() == 0 ){
-                    throw std::runtime_error("No eigen values found");
-                }
-                for (int i = 0; i < results.data.size(); ++i) {
-                    if ( results.data.size() > i ){
-                        text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
-                    }
-                    if ( results.data.size() > i ){
-                        text += "Vector: " + QString::fromStdString(to_string(results.data[i].eigenVector));
-                    }
-                    text += "\n";
-                }
-                text += QString::number(results.time) + " ms | " + DecartGraphWidget::formula(results);
-                ui->lblResult->setText(text);
-                ui->graph->showPolynom(results);
-            }
-        }
-        else if (ui->methodComboBox->currentText() == "Rotation"){
+        } else if (ui->methodComboBox->currentText() == "Rotation"){
             eigenVV = createRotationMatrixEigenVV();
-            auto matrix = matrixModel->getMatrix();
-            if (eigenVV) {
-                QString text;
-                auto results = eigenVV->calculate(matrix);
-                if ( results.data.size() == 0 ){
-                    throw std::runtime_error("No eigen values found");
-                }
-                for (int i = 0; i < results.data.size(); ++i) {
-                    if ( results.data.size() > i ){
-                        text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
-                    }
-                    if ( results.data.size() > i ){
-                        text += "Vector: " + QString::fromStdString(to_string(results.data[i].eigenVector));
-                    }
-                    text += "\n";
-                }
-                text += QString::number(results.time) + " ms";
-                ui->lblResult->setText(text);
+        }
+        auto matrix = matrixModel->getMatrix();
+        if (eigenVV) {
+            QString text;
+            auto results = eigenVV->calculate(matrix);
+            if ( results.data.size() == 0 ){
+                throw std::runtime_error("No eigen values found");
             }
+            eigenValues = results.data;
+            for (int i = 0; i < results.data.size(); ++i) {
+                if ( results.data.size() > i ){
+                    text += "Eigen value: " + QString::number(results.data[i].eigenValue) + " \t";
+                }
+                if ( results.data.size() > i ){
+                    text += "Vector: " + QString::fromStdString(to_string(results.data[i].eigenVector));
+                }
+                text += "\n";
+            }
+            text += QString::number(results.time) + " ms | " + results.formula.c_str();
+            ui->lblResult->setText(text);
+            ui->graph->showPolynom(results);
         }
     } catch (const std::exception & e) {
         ui->lblResult->setText("");

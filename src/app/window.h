@@ -29,6 +29,7 @@ private:
     Ui::Window *ui;
     MatrixModel * matrixModel;
     std::unique_ptr<IMatrixEigenVV> eigenVV;
+    std::vector<IMatrixEigenVV::Eigen> eigenValues;
 };
 
 #endif // WINDOW_H

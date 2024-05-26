@@ -12,6 +12,10 @@ DecartGraphWidget::DecartGraphWidget(QWidget *parent) : QWidget(parent)
 
 void DecartGraphWidget::showPolynom(const Result &result)
 {
+    if ( result.func == nullptr ){
+        clear();
+        return;
+    }
     this->result = result;
     double value;
     this->stepX = calcStep(result.funcMaxX, &value);
@@ -111,22 +115,6 @@ void DecartGraphWidget::drawIntersections(QPainter &painter)
     for (auto ee : result.data) {
         painter.drawEllipse(xToScreen(ee.eigenValue) - radius, yToScreen(0) - radius, 2 * radius, 2 * radius);
     }
-}
-
-QString DecartGraphWidget::formula(const Result &result)
-{
-    QString res = QString::asprintf("f(x) = x^%d ", int(result.coefficients.size()) );
-    auto iter = result.coefficients.begin();
-    for (int i = result.coefficients.size() - 1; i >= 0; i--, iter++)
-    {
-        if ( i == 0 )
-            res += QString::asprintf("%+f ", *iter * -1);
-        else if ( i == 1 )
-            res += QString::asprintf("%+f*x ", *iter * -1);
-        else
-            res += QString::asprintf("%+f*x^%d ", *iter * -1, i);
-    }
-    return res;
 }
 
 void DecartGraphWidget::clear()

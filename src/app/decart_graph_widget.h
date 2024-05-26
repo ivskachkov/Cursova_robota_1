@@ -13,7 +13,6 @@ public:
     void showPolynom(const Result & result);
     QSize sizeHint() const override;
     void clear();
-    static QString formula(const Result & result);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

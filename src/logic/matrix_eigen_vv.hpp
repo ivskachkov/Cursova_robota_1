@@ -20,6 +20,7 @@ public:
         double funcMaxX;
         std::vector<double> coefficients;
         uint64_t time;
+        std::string formula;
     };
     virtual ~IMatrixEigenVV() = default;
     virtual Result calculate (const Mat & matrix) = 0;

@@ -41,7 +41,7 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
 
     int lastID = res.data.size()-1;
     res.funcMaxX = fabs(res.data[0].eigenValue) > fabs(res.data[lastID].eigenValue) ? res.data[0].eigenValue : res.data[lastID].eigenValue;
-    //std::transform(vecS.begin(), vecS.end(), std::back_inserter(res.eigenVectors), [](const Matrix & v) { return v.transpose()[0]; });
+    res.formula = formula(res);
     return res;
 }
 
@@ -74,4 +74,20 @@ Matrix DanylevskyMatrixEigenVV::makeMR(const Matrix & m, int d) const
     Matrix result(m.rows(), m.cols());
     result[d-1] = m[d];
     return result;
+}
+
+std::string DanylevskyMatrixEigenVV::formula(const Result &result)
+{
+    std::string res = "f(x) = x^" + std::to_string(result.coefficients.size()) + " ";
+    auto iter = result.coefficients.begin();
+    for (int i = result.coefficients.size() - 1; i >= 0; i--, iter++)
+    {
+        if ( i == 0 )
+            res += std::to_string(*iter * -1);
+        else if ( i == 1 )
+            res += std::to_string(*iter * -1) + "*x ";
+        else
+            res += std::to_string(*iter * -1) + "*x^" + std::to_string(i) + " ";
+    }
+    return res;
 }

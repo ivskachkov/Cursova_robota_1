@@ -13,6 +13,7 @@ public:
     static double func(double x, const std::vector<double> & v);
 
 private:
+    static std::string formula(const Result & result);
     Matrix makeM(const Matrix & m, int n) const;
     Matrix makeMR(const Matrix & m, int n) const;
     std::unique_ptr<IExtremumFinder> finder;
