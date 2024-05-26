@@ -125,7 +125,7 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
     tEnd = currentTimestamp();
     res.time = tEnd - tStart;
     std::sort(res.data.begin(), res.data.end(), [](const Eigen & a, const Eigen & b) { return a.eigenValue < b.eigenValue; });
-    auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-4 || e.eigenVector.empty(); });
+    auto e = std::remove_if(res.data.begin(), res.data.end(), [res](const Eigen & e) { return fabs(e.eigenValue) < 1E-6 || e.eigenVector.empty(); });
     res.data.erase(e, res.data.end());
     return res;
 }

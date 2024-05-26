@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <functional>
+#include <cstdint>
+#include <string>
 
 class IMatrixEigenVV
 {
