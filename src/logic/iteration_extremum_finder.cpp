@@ -12,8 +12,7 @@ std::vector<double> IterationExtremumFinder::findExtremums(const std::function<d
     std::vector<double> roots;
     double x = leftx;
     double y = f(x);
-    int i = 0;
-    while (x < rightx && i++ < 10000) {
+    while (x < rightx) {
         if (y * f(x + step) < 0) {
             roots.push_back(findRoot(x, x + step, eps, f));
         }

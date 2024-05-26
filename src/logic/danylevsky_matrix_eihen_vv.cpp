@@ -76,6 +76,21 @@ Matrix DanylevskyMatrixEigenVV::makeMR(const Matrix & m, int d) const
     return result;
 }
 
+static std::string doubleToString(double value)
+{
+    std::string res = std::to_string(value);
+    if ( res.find('.') != std::string::npos )
+    {
+        while ( res.back() == '0' )
+            res.pop_back();
+        if ( res.back() == '.' )
+            res.pop_back();
+    }
+    if ( value > 0 )
+        res = "+" + res;
+    return res;
+}
+
 std::string DanylevskyMatrixEigenVV::formula(const Result &result)
 {
     std::string res = "f(x) = x^" + std::to_string(result.coefficients.size()) + " ";
@@ -83,11 +98,11 @@ std::string DanylevskyMatrixEigenVV::formula(const Result &result)
     for (int i = result.coefficients.size() - 1; i >= 0; i--, iter++)
     {
         if ( i == 0 )
-            res += std::to_string(*iter * -1);
+            res += doubleToString(*iter * -1);
         else if ( i == 1 )
-            res += std::to_string(*iter * -1) + "*x ";
+            res += doubleToString(*iter * -1) + "*x ";
         else
-            res += std::to_string(*iter * -1) + "*x^" + std::to_string(i) + " ";
+            res += doubleToString(*iter * -1) + "*x^" + std::to_string(i) + " ";
     }
     return res;
 }
