@@ -12,7 +12,8 @@ std::vector<double> IterationExtremumFinder::findExtremums(const std::function<d
     std::vector<double> roots;
     double x = leftx;
     double y = f(x);
-    while (x < rightx) {
+    int i = 0;
+    while (x < rightx && i++ < 10000) {
         if (y * f(x + step) < 0) {
             roots.push_back(findRoot(x, x + step, eps, f));
         }
@@ -28,7 +29,7 @@ double IterationExtremumFinder::findRoot(double leftx, double rightx, double eps
     double y = f(x);
     double prefix = f(x + eps) > y ? 1 : -1;
     int i = 0;
-    while (fabs(y) > eps && i++ < 1000) {
+    while (fabs(y) > eps && i++ < 10000) {
         if (y * prefix > 0) {
             rightx = x;
         } else {
