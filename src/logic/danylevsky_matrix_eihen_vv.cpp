@@ -8,6 +8,9 @@ DanylevskyMatrixEigenVV::DanylevskyMatrixEigenVV(std::unique_ptr<IExtremumFinder
 
 DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & matrix)
 {
+    Result res;
+    res.iterations = 0;
+    res.operations = 0;
     std::vector<Vector> arg;
     std::transform(matrix.begin(), matrix.end(), std::back_inserter(arg), [](const Vec & v) { return Vector(v); });
     uint64_t tStart = currentTimestamp(), tEnd = 0;
@@ -18,21 +21,29 @@ DanylevskyMatrixEigenVV::Result DanylevskyMatrixEigenVV::calculate(const Mat & m
         Matrix mr = makeMR(m, i);
         m = mr * m * ma;
         s = s * ma;
+        res.iterations++;
+        res.operations += 3 * m.rows() * m.cols() + 2/*makeMR*/ + 3/*makeM*/;
     }
     std::vector<Matrix> vecS(m.rows(), Matrix(m.cols(), 1));
-    Result res;
     res.data.resize(m.rows());
     res.coefficients = m[0];
     res.func = [v = m[0]](double x)->double { return func(x, v); };
     auto values = finder->findExtremums(res.func);
+    res.iterations += finder->getIterations();
+    res.operations += finder->getOperations();
     for ( int i = 0; i < values.size(); ++i ){
         res.data[i].eigenValue = values[i];
         double v = values[i];
         for ( int j = 0; j < m.rows(); ++j ){
             vecS[i][j][0] = pow(v, m.rows()-j-1);
+            res.operations++;
+            res.iterations++;
         }
         vecS[i] = s * vecS[i];
+        res.operations +=  m.rows() * m.cols()/*mul*/;
         res.data[i].eigenVector = vecS[i].transpose()[0];
+        res.operations +=  m.rows() * m.cols()/*transpose*/;
+        res.iterations++;
     }
     tEnd = currentTimestamp();
     res.time = tEnd - tStart;

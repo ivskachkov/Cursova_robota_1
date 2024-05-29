@@ -95,6 +95,9 @@ Matrix RotationMatrixEigenVV::applyL(double value)
 
 IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
 {
+    Result res;
+    res.iterations = 0;
+    res.operations = 0;
     std::vector<Vector> arg;
     std::transform(matrix.begin(), matrix.end(), std::back_inserter(arg), [](const Vec & v) { return Vector(v); });
     m = Matrix(arg);
@@ -110,9 +113,9 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
         m = tU * m * U;
         uVector = uVector * U;
         i--;
+        res.iterations += 1 + 2 * m.rows() * m.cols() /*calculateNDE*/;
+        res.operations += 6 * m.rows() * m.cols()/*mul+transpose+calculateNDE*/ + 8 /*getU*/;
     }
-
-    Result res;
     res.data.resize(m.rows());
     auto values = m.diagonal();
     for ( int i = 0; i < res.data.size(); ++i ){
@@ -121,6 +124,8 @@ IMatrixEigenVV::Result RotationMatrixEigenVV::calculate(const Mat & matrix)
         v = v / v[m.rows()-1];
         if ( v.isValid() )
             res.data[i].eigenVector = v;
+        res.operations += 4;
+        res.iterations++;
     }
     tEnd = currentTimestamp();
     res.time = tEnd - tStart;

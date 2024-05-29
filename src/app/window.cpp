@@ -138,6 +138,8 @@ void Window::on_calculateButton_clicked()
 {
     try {
         ui->graph->clear();
+        ui->lblResult->setText("");
+        ui->lblStat->setText("");
         if (ui->methodComboBox->currentText() == "Danylevskogo"){
             eigenVV = createDanylevskyMatrixEigenVV();
         } else if (ui->methodComboBox->currentText() == "Rotation"){
@@ -163,6 +165,7 @@ void Window::on_calculateButton_clicked()
             text += QString::number(results.time) + " ms | " + results.formula.c_str();
             ui->lblResult->setText(text);
             ui->graph->showPolynom(results);
+            ui->lblStat->setText("Iterations: " + QString::number(results.iterations) + " | Operations: " + QString::number(results.operations));
         }
     } catch (const std::exception & e) {
         ui->lblResult->setText("");

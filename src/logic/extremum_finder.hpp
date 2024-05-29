@@ -2,8 +2,9 @@
 
 #include <vector>
 #include <functional>
+#include "stat_provider.hpp"
 
-class IExtremumFinder
+class IExtremumFinder: public IStatProvider
 {
 public:
     virtual ~IExtremumFinder() = default;

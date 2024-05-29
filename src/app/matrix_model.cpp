@@ -61,12 +61,22 @@ QVariant MatrixModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+double MatrixModel::limit() const
+{
+    if ( matrix.size() < 4 )
+        return 1000;
+    if ( matrix.size() < 6 )
+        return 60;
+    return 10;
+}
+
 bool MatrixModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid() || role != Qt::EditRole)
         return false;
     double v = value.toDouble();
-    if ( v > 1000 || v < -1000)
+    double max = limit();
+    if ( v > max || v < -max)
         return false;
     matrix[index.row()][index.column()] = v;
     emit dataChanged(index, index, {role});

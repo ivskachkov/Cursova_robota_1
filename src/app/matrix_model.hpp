@@ -23,5 +23,6 @@ public:
     std::vector<std::vector<double>> getMatrix() const;
 
 private:
+    double limit()const;
     std::vector<std::vector<double>> matrix;
 };

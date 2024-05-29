@@ -23,6 +23,8 @@ public:
         std::vector<double> coefficients;
         uint64_t time;
         std::string formula;
+        int iterations;
+        int operations;
     };
     virtual ~IMatrixEigenVV() = default;
     virtual Result calculate (const Mat & matrix) = 0;
